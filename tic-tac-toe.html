@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(90deg, #141e30, #243b55);
+            animation: fadeBackground 10s infinite alternate;
+        }
+
+        @keyframes fadeBackground {
+            from { background-color: #141e30; }
+            to { background-color: #243b55; }
+        }
+
+        h1 {
+            color: white;
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 1s ease;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #08bbb2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .cell:hover {
+            background-color: #141eac;
+            transform: scale(1.1);
+        }
+
+        #message {
+            color: white;
+            margin-top: 20px;
+        }
+
+        .mode-button,
+        .restart-button {
+            padding: 10px;
+            margin: 10px;
+            background-color: #141eac;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .mode-button:hover,
+        .restart-button:hover {
+            background-color: #08bbb2;
+        }
+
+        /* Popup winner styling */
+        #winner-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            display: none;
+            animation: glow 1s infinite;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px #fff; }
+            50% { box-shadow: 0 0 30px #08bbb2, 0 0 60px #08bbb2; }
+            100% { box-shadow: 0 0 10px #fff; }
+        }
+
+        .fireworks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .firework {
+            position: absolute;
+            background: radial-gradient(circle, white, transparent);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            opacity: 0;
+            animation: burst 1s ease-out;
+        }
+
+        @keyframes burst {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(10); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Tic Tac Toe</h1>
+        <div>
+            <button class="mode-button" onclick="setMode('friend')">You vs Friend</button>
+            <button class="mode-button" onclick="setMode('computer')">You vs Computer</button>
+            <button class="restart-button" onclick="resetBoard()">Restart Game</button>
+        </div>
+        <div id="board">
+            <div class="cell" onclick="makeMove(0)"></div>
+            <div class="cell" onclick="makeMove(1)"></div>
+            <div class="cell" onclick="makeMove(2)"></div>
+            <div class="cell" onclick="makeMove(3)"></div>
+            <div class="cell" onclick="makeMove(4)"></div>
+            <div class="cell" onclick="makeMove(5)"></div>
+            <div class="cell" onclick="makeMove(6)"></div>
+            <div class="cell" onclick="makeMove(7)"></div>
+            <div class="cell" onclick="makeMove(8)"></div>
+        </div>
+        <div id="message"></div>
+        <div id="winner-popup"></div>
+        <div class="fireworks"></div>
+    </div>
+
+    <script>
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let currentPlayer = "X";
+        let gameActive = true;
+        let mode = "friend";
+        const messageDisplay = document.getElementById("message");
+        const winnerPopup = document.getElementById("winner-popup");
+        const fireworks = document.querySelector('.fireworks');
+
+        function setMode(selectedMode) {
+            mode = selectedMode;
+            resetBoard();
+            messageDisplay.textContent = mode === "friend" ? "You vs Friend!" : "You vs Computer!";
+        }
+
+        function resetBoard() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = "X";
+            gameActive = true;
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = "";
+                cell.style.backgroundColor = "#08bbb2";
+            });
+            winnerPopup.style.display = "none";
+            fireworks.innerHTML = "";
+        }
+
+        function makeMove(index) {
+            if (!gameActive || board[index] !== "") return;
+
+            board[index] = currentPlayer;
+            document.querySelectorAll('.cell')[index].textContent = currentPlayer;
+
+            if (checkWinner()) {
+                gameActive = false;
+                displayWinner(`${currentPlayer} wins!`);
+                return;
+            } else if (!board.includes("")) {
+                gameActive = false;
+                displayWinner("It's a draw!");
+                return;
+            }
+
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+            if (mode === "computer" && currentPlayer === "O") {
+                setTimeout(computerMove, 1000);  // Adds delay for realistic effect
+            }
+        }
+
+        function computerMove() {
+            let bestMove = minimax(board, "O").index;
+            makeMove(bestMove);
+        }
+
+        function minimax(newBoard, player) {
+            const availSpots = newBoard.map((val, index) => val === "" ? index : null).filter(val => val !== null);
+
+            if (checkWinnerFor("X", newBoard)) return { score: -10 };
+            if (checkWinnerFor("O", newBoard)) return { score: 10 };
+            if (availSpots.length === 0) return { score: 0 };
+
+            let moves = [];
+
+            for (let i = 0; i < availSpots.length; i++) {
+                let move = {};
+                move.index = availSpots[i];
+                newBoard[availSpots[i]] = player;
+
+                if (player === "O") {
+                    move.score = minimax(newBoard, "X").score;
+                } else {
+                    move.score = minimax(newBoard, "O").score;
+                }
+
+                newBoard[availSpots[i]] = "";
+                moves.push(move);
+            }
+
+            let bestMove;
+            if (player === "O") {
+                let bestScore = -10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score > bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            } else {
+                let bestScore = 10000;
+                for (let i = 0; i < moves.length; i++) {
+                    if (moves[i].score < bestScore) {
+                        bestScore = moves[i].score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return moves[bestMove];
+        }
+
+        function checkWinner() {
+            return checkWinnerFor(currentPlayer, board);
+        }
+
+        function checkWinnerFor(player, board) {
+            const winConditions = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            return winConditions.some(combination => {
+                return combination.every(index => board[index] === player);
+            });
+        }
+
+        function displayWinner(message) {
+            winnerPopup.textContent = message;
+            winnerPopup.style.display = "block";
+            createFireworks();
+        }
+
+        function createFireworks() {
+            for (let i = 0; i < 30; i++) {
+                let firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = Math.random() * window.innerWidth + 'px';
+                firework.style.top = Math.random() * window.innerHeight + 'px';
+                firework.style.animationDuration = Math.random() * 1 + 0.5 + 's';
+                fireworks.appendChild(firework);
+                setTimeout(() => firework.remove(), 1000);
+            }
+        }
+    </script>
+</body>
+</html>

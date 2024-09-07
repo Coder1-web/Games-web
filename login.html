@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        let typingTimer;
+        const typingDelay = 500;
+
+        function validatePassword() {
+            var password = document.getElementById('password').value;
+            var feedback = document.getElementById('feedback');
+            var redirectPage = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+
+            if (password === 'darkstuff3022') {
+                document.getElementById('bear-face').classList.add('eyes-closed');
+                feedback.textContent = 'Password is correct! Redirecting...';
+                feedback.classList.add('feedback-correct');
+                setTimeout(() => {
+                    window.location.href = redirectPage; // Redirect to the target page
+                }, 1000);
+            } else {
+                feedback.textContent = 'Oops! The password is not right, please try again...';
+                feedback.classList.add('feedback-wrong');
+                document.getElementById('bear-face').classList.add('eyes-closed');
+                setTimeout(() => {
+                    feedback.classList.remove('feedback-correct', 'feedback-wrong');
+                    feedback.textContent = '';
+                }, 3000);
+            }
+            return false;
+        }
+
+        function handleTyping() {
+            var password = document.getElementById('password').value;
+            var bearFace = document.getElementById('bear-face');
+            if (password) {
+                bearFace.classList.add('eyes-closed');
+            } else {
+                bearFace.classList.remove('eyes-closed');
+            }
+        }
+
+        function handleKeyUp() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(handleTyping, typingDelay);
+        }
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-wrapper">
+            <div id="bear-face" class="bear-face">
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#A0522D" />
+                    <circle cx="20" cy="20" r="15" fill="#A0522D" />
+                    <circle cx="80" cy="20" r="15" fill="#A0522D" />
+                    <circle cx="35" cy="40" r="10" fill="#FFF" class="eye-left"/>
+                    <circle cx="35" cy="40" r="5" fill="#000"/>
+                    <circle cx="65" cy="40" r="10" fill="#FFF" class="eye-right"/>
+                    <circle cx="65" cy="40" r="5" fill="#000"/>
+                    <rect x="28" y="30" width="14" height="3" fill="#A0522D" class="eyebrow-left"/>
+                    <rect x="58" y="30" width="14" height="3" fill="#A0522D" class="eyebrow-right"/>
+                    <circle cx="50" cy="60" r="15" fill="#FFD700"/> 
+                    <circle cx="50" cy="50" r="5" fill="#000"/>
+                </svg>
+            </div>
+            <h1>Login</h1>
+            <form onsubmit="return validatePassword()">
+                <input type="password" id="password" name="password" placeholder="Enter Password" required oninput="handleTyping()" onkeyup="handleKeyUp()">
+                <button type="submit">Submit</button>
+            </form>
+            <div id="feedback" class="feedback"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #121524;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        canvas {
+            border: 1px solid #08bbb2;
+        }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score" id="score">Score: 0</div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const box = 20;
+        let snake = [{x: 9 * box, y: 10 * box}];
+        let food = {
+            x: Math.floor(Math.random() * 19 + 1) * box,
+            y: Math.floor(Math.random() * 19 + 1) * box
+        };
+        let poison = {
+            x: Math.floor(Math.random() * 19 + 1) * box,
+            y: Math.floor(Math.random() * 19 + 1) * box
+        };
+        let score = 0;
+        let d;
+        let poisonTimer = 0;
+
+        document.addEventListener('keydown', direction);
+
+        function direction(event) {
+            if (event.keyCode == 37 && d != "RIGHT") {
+                d = "LEFT";
+            } else if (event.keyCode == 38 && d != "DOWN") {
+                d = "UP";
+            } else if (event.keyCode == 39 && d != "LEFT") {
+                d = "RIGHT";
+            } else if (event.keyCode == 40 && d != "UP") {
+                d = "DOWN";
+            }
+        }
+
+        function collision(newHead, snake) {
+            for (let i = 0; i < snake.length; i++) {
+                if (newHead.x == snake[i].x && newHead.y == snake[i].y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function wrapAround(x, y) {
+            if (x >= canvas.width) x = 0;
+            if (x < 0) x = canvas.width - box;
+            if (y >= canvas.height) y = 0;
+            if (y < 0) y = canvas.height - box;
+            return {x, y};
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the snake
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = (i == 0) ? "#0ef" : "#08bbb2";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = "#141eac";
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            // Draw the food
+            ctx.fillStyle = "#FFD700";
+            ctx.fillRect(food.x, food.y, box, box);
+
+            // Draw the moving poisonous food
+            ctx.fillStyle = "#FF6347";
+            ctx.fillRect(poison.x, poison.y, box, box);
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (d == "LEFT") snakeX -= box;
+            if (d == "UP") snakeY -= box;
+            if (d == "RIGHT") snakeX += box;
+            if (d == "DOWN") snakeY += box;
+
+            let newHead = wrapAround(snakeX, snakeY);
+
+            // Check if the snake eats the food
+            if (newHead.x == food.x && newHead.y == food.y) {
+                score++;
+                document.getElementById('score').textContent = "Score: " + score;
+                food = {
+                    x: Math.floor(Math.random() * 19 + 1) * box,
+                    y: Math.floor(Math.random() * 19 + 1) * box
+                };
+                snake.push({...snake[snake.length - 1]}); // Add new segment
+            }
+
+            // Check if the snake eats the poisonous food
+            if (newHead.x == poison.x && newHead.y == poison.y) {
+                if (snake.length > 1) {
+                    snake.pop(); // Remove last segment of the tail
+                    score--;
+                    document.getElementById('score').textContent = "Score: " + score;
+                }
+                // Move the poison to a new random position
+                poison = {
+                    x: Math.floor(Math.random() * 19 + 1) * box,
+                    y: Math.floor(Math.random() * 19 + 1) * box
+                };
+            } else {
+                snake.pop();
+            }
+
+            if (collision(newHead, snake)) {
+                clearInterval(game);
+                alert("Game Over! Your score was: " + score);
+                document.location.reload();
+            }
+
+            snake.unshift(newHead);
+
+            // Move the poisonous food periodically
+            poisonTimer++;
+            if (poisonTimer >= 20) {
+                poison.x = Math.floor(Math.random() * 19 + 1) * box;
+                poison.y = Math.floor(Math.random() * 19 + 1) * box;
+                poisonTimer = 0;
+            }
+        }
+
+        let game = setInterval(draw, 150); // Slower speed for the snake
+    </script>
+</body>
+</html>

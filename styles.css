@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Background animation */
+@keyframes bgShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(270deg,
+        #7cc3df, #1e724f, #2a5298, #141eac, #451f82, #273c75, #3114b1, #1e90ff, #2980b9, #3498db,
+        #007bb5, #005b96, #006994, #4682b4, #6495ed, #00bfff, #1e90ff, #00aaff, #00bcd4, #03a9f4,
+        #08bbb2, #0f4c57, #1b6ca8, #1565c0, #2979ff, #3f51b5, #304ffe, #5c6bc0, #3d5afe, #141eac
+    );
+    background-size: 1000% 1000%;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    animation: bgShift 30s ease infinite; /* Apply background color animation */
+}
+
+/* Main Container Styling for Game Selection */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #FFFFFF;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.game-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-link {
+    text-decoration: none;
+    color: #FFFFFF;
+    background-color: #00008B;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.5em;
+    transition: background-color 0.3s ease;
+}
+
+.game-link:hover {
+    background-color: #0000FF;
+}
+
+.login-button {
+    text-decoration: none;
+    color: #FFFFFF;
+    background-color: #00008B;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.5em;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.login-button:hover {
+    background-color: #0000FF;
+}
+
+/* Login Container Styles */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.login-wrapper {
+    width: 400px;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(158, 12, 12, 0.1), rgba(0, 0, 0, 0.5));
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Input and Button Styles */
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #0ef;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    animation: glow 1.5s infinite alternate;
+}
+
+input[type="password"]:focus {
+    border-color: #07d7d7;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 10px #07d7d7;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px #0ef; }
+    to { box-shadow: 0 0 20px #0ef; }
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0ef, #07d7d7);
+    color: #000;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #07d7d7, #0ef);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.4s, transform 0.4s;
+}
+
+button:active::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+/* Bear Face Animation */
+.bear-face {
+    position: absolute;
+    left: -120px; /* Adjust as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+    height: 100px;
+    z-index: 9; /* Ensure it's below the form but above the background */
+}
+
+.bear-face svg {
+    width: 100%;
+    height: 100%;
+    fill: #A0522D; /* Teddy bear color */
+    transition: fill 0.3s;
+}
+
+.eye-left, .eye-right {
+    transition: fill 0.3s; /* Smooth transition for eye color */
+}
+
+.eyes-closed .eye-left, .eyes-closed .eye-right {
+    fill: #A0522D; /* Change eye color to bear color when eyes are closed */
+}
+
+.eye-pupil {
+    fill: #000; /* Black pupils */
+    transition: opacity 0.3s;
+}
+
+.eyes-closed .eye-pupil {
+    opacity: 0; /* Hide pupils when eyes are closed */
+}
+
+.eyes-closed .eye-pupil {
+    display: none; /* Completely remove the pupils when eyes are closed */
+}
+
+.eyebrow-left, .eyebrow-right {
+    stroke: #A0522D; /* Brown color for eyebrows */
+    stroke-width: 2;
+    transition: transform 0.3s;
+}
+
+.eyes-closed .eyebrow-left, .eyes-closed .eyebrow-right {
+    transform: translateY(5px); /* Move eyebrows down when eyes are closed */
+}
+
+/* Feedback Styling */
+.feedback {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.feedback-correct {
+    background: rgba(0, 255, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    animation: fadeInOut 3s ease;
+}
+
+.feedback-wrong {
+    background: rgba(255, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Main Popup Style */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px #ffffff;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  }
+  
+  /* Show Popup */
+  .popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Popup Content: Glowing Text */
+  .popup-content h1 {
+    color: #00ffcc;
+    font-size: 3em;
+    text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    animation: glow 1s ease-in-out infinite alternate;
+  }
+  
+  /* Glowing Animation */
+  @keyframes glow {
+    0% {
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    }
+    100% {
+      text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
+    }
+  }
+  
+  /* Crackers Effect */
+  .crackers {
+    background-image: url('crackers.gif'); /* Replace with your crackers GIF */
+    background-size: cover;
+    height: 200px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Hide Popup Initially */
+  .hidden {
+    display: none;
+  }
+  
+  /* Popup Animation (Scaling) */
+  .popup-content {
+    animation: popupAnimation 0.8s ease-out forwards;
+  }
+  
+  /* Keyframes for Popup Scale Animation */
+  @keyframes popupAnimation {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Additional Animation for Crackers */
+  @keyframes crackersAnimation {
+    0% {
+      transform: translateY(-10px);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(0px);
+      opacity: 1;
+    }
+  }
+  

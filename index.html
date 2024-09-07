@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Selection</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function redirectToLogin(event, gamePage) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Save the target page in session storage
+            sessionStorage.setItem('redirectAfterLogin', gamePage);
+
+            // Redirect to the login page
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Choose Your Game</h1>
+        <div class="game-selection">
+            <a href="#" class="game-link" onclick="redirectToLogin(event, 'tic-tac-toe.html')">Tic-Tac-Toe</a>
+            <a href="#" class="game-link" onclick="redirectToLogin(event, 'snake.html')">Snake</a>
+            <a href="#" class="game-link" onclick="redirectToLogin(event, 'platformer.html')">2D Platformer</a>
+        </div>
+        <a href="login.html" class="login-button">Login</a>
+    </div>
+</body>
+</html>
